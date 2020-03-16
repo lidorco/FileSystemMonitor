@@ -13,21 +13,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\log">
+    <Filter Include="Source Files\Log">
       <UniqueIdentifier>{b8ffb375-52f3-4170-8435-2987aa9f7a8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EventLog">
+      <UniqueIdentifier>{59eafbb8-5dee-4b23-9d03-11531d44cfd5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\log\log.cpp">
-      <Filter>Source Files\log</Filter>
+    <ClCompile Include="src\EventLog\EventLog.cpp">
+      <Filter>Source Files\EventLog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\log\log.h">
-      <Filter>Source Files\log</Filter>
+      <Filter>Source Files\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EventLog\EventLog.h">
+      <Filter>Source Files\EventLog</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

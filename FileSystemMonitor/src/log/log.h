@@ -24,5 +24,4 @@ void LogRecursive(const char* file, int line, std::ostringstream& msg)
 	logLine << file << "(" << line << "): " << msg.str() << std::endl;
 	OutputDebugStringA(logLine.str().c_str());
 	printf(logLine.str().c_str());
-
 }
