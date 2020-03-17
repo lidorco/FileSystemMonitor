@@ -1,11 +1,14 @@
-#include "Log\Log.h"
+//#include "Log\Log.h"
 #include "EventLog\EventLog.h"
+#include "AccessAudit\AccessAudit.h"
 
 int main() {
 	
-	LOG("File System Monitor started");
+	//LOG("File System Monitor started");
 	
-	EventsSubscriber();
+	EnableDirectoryAccessAudit(std::wstring(L"C:\\temp\\test\\test4"));
+
+	//EventsSubscriber();
 	
 	return 0;
 }

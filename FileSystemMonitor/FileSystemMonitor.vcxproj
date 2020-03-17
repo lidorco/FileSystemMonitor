@@ -110,10 +110,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AccessAudit\AccessAudit.cpp" />
     <ClCompile Include="src\EventLog\EventLog.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AccessAudit\AccessAudit.h" />
     <ClInclude Include="src\EventLog\EventLog.h" />
     <ClInclude Include="src\log\log.h" />
   </ItemGroup>

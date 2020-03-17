@@ -137,3 +137,5 @@ cleanup:
 	if (hSubscription)
 		EvtClose(hSubscription);
 }
+
+
