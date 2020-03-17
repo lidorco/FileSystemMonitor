@@ -118,6 +118,7 @@
     <ClInclude Include="src\AccessAudit\AccessAudit.h" />
     <ClInclude Include="src\EventLog\EventLog.h" />
     <ClInclude Include="src\log\log.h" />
+    <ClInclude Include="src\Monitor\Monitor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

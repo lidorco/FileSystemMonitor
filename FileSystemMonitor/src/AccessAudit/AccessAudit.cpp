@@ -1,9 +1,7 @@
-#include <windows.h>
 #include <aclapi.h>
 #include <sddl.h>
 #include <iostream>
 
-//#include "..\Log\Log.h"
 #include "AccessAudit.h"
 
 
@@ -23,16 +21,15 @@ bool SetPrivilege(HANDLE hToken, LPCTSTR lpszPrivilege, bool bEnablePrivilege)
 	// an array of LUID_AND_ATTRIBUTES structures
 	tp.Privileges[0].Luid = luid;
 	
-	// If TRUE
 	if (bEnablePrivilege) 
 	{
 		tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-		std::cout << "Privilege was enabled!";
+		std::cout << "Privilege was enabled!" << std::endl;
 	} 
 	else 
 	{
 		tp.Privileges[0].Attributes = 0;
-		std::cout << "Privilege was disabled!";
+		std::cout << "Privilege was disabled!" << std::endl;
 	}
 
 	// Enable the privilege(or disable all privileges)
@@ -52,16 +49,60 @@ bool SetPrivilege(HANDLE hToken, LPCTSTR lpszPrivilege, bool bEnablePrivilege)
 }
 
 
+ProcessToken::ProcessToken(HANDLE processHandle, DWORD access)
+{
+	if (!OpenProcessToken(processHandle, access, &m_token)) {
+		m_token = NULL;
+		std::cout << "OpenProcessToken failed " << GetLastError() << std::endl;
+	}
+	else {
+		std::cout << "OpenProcessToken succeed " << GetLastError() << std::endl;
+	}
+}
+
+ProcessToken::~ProcessToken()
+{
+	if (m_token) {
+		CloseHandle(m_token);
+	}
+}
+
+HANDLE ProcessToken::getToken()
+{
+	return m_token;
+}
+
+AddPrivilege::AddPrivilege(std::string privilege) : m_privilege(privilege), m_is_privileged(false)
+{
+	ProcessToken processToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES);
+	if (!processToken.getToken())
+	{
+		return;
+	}
+	m_is_privileged = SetPrivilege(processToken.getToken(), m_privilege.c_str(), TRUE);
+}
+
+AddPrivilege::~AddPrivilege()
+{
+	ProcessToken processToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES);
+	if (!processToken.getToken())
+	{
+		return;
+	}
+	m_is_privileged = SetPrivilege(processToken.getToken(), m_privilege.c_str(), FALSE);
+}
+
+bool AddPrivilege::isPrivileged()
+{
+	return m_is_privileged;
+}
+
+
+
 bool EnableDirectoryAccessAudit(const std::wstring directory)
 {
-	HANDLE hToken;
-	if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken))
-	{
-		std::cout << "OpenProcessToken  failed " << GetLastError() << std::endl;
-		return false;
-	}
-
-	if (false == SetPrivilege(hToken, "SeSecurityPrivilege", TRUE)) 
+	AddPrivilege privilege("SeSecurityPrivilege");
+	if (!privilege.isPrivileged())
 	{
 		return false;
 	}
@@ -78,14 +119,6 @@ bool EnableDirectoryAccessAudit(const std::wstring directory)
 		return false;
 	}
 	std::cout << "GetNamedSecurityInfoW  worked " << result << std::endl;
-
-	/*
-	PSID everyoneSid = { 0 };
-	if (0 == ConvertStringSidToSidA("S-1-1-0", &everyoneSid)) { //World :	S-1-1-0 		(A group that includes all users.)
-		//LOG("ConvertStringSidToSidA failed");
-		DWORD error = GetLastError();
-		return false;
-	}*/
 
 
 	EXPLICIT_ACCESS ea;
@@ -105,8 +138,6 @@ bool EnableDirectoryAccessAudit(const std::wstring directory)
 		return false;
 	}
 
-
-
 	result = SetNamedSecurityInfoW(const_cast<LPWSTR>(directory.c_str()), SE_FILE_OBJECT, SACL_SECURITY_INFORMATION, NULL, NULL, NULL, updatedSystemAcl);
 	if (result != ERROR_SUCCESS)
 	{
@@ -115,17 +146,35 @@ bool EnableDirectoryAccessAudit(const std::wstring directory)
 		return false;
 	}
 
-	/*
-	if (0 == AddAuditAccessObjectAce(systemAcl, ACL_REVISION_DS, SUCCESSFUL_ACCESS_ACE_FLAG, GENERIC_ALL, NULL, NULL, everyoneSid, TRUE, FALSE)) {
-		//LOG("AddAuditAccessObjectAce failed");
-		DWORD error = GetLastError();
-		return false;
-	}*/
-
 	return true;
 }
 
+/*
+Generate empty ACL for the directory
+*/
 bool DisableDirectoryAccessAudit(const std::wstring directory)
 {
+	AddPrivilege privilege("SeSecurityPrivilege");
+	if (!privilege.isPrivileged())
+	{
+		return false;
+	}
+
+
+	PACL emptyAcl = NULL;
+	emptyAcl = (ACL*)LocalAlloc(LPTR, sizeof(ACL));
+	if (0 == InitializeAcl(emptyAcl, sizeof(ACL), ACL_REVISION))
+	{
+		std::cout << "InitializeAcl() failed, error " << GetLastError() << std::endl;
+	}
+
+	DWORD result = SetNamedSecurityInfoW(const_cast<LPWSTR>(directory.c_str()), SE_FILE_OBJECT, SACL_SECURITY_INFORMATION, NULL, NULL, NULL, emptyAcl);
+	if (result != ERROR_SUCCESS)
+	{
+		std::cout << "SetNamedSecurityInfo() failed, error " << result << std::endl;
+		//Cleanup(pSS, pNewSACL);
+		return false;
+	}
+
 	return false;
 }

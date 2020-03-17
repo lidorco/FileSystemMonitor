@@ -22,6 +22,9 @@
     <Filter Include="Source Files\AccessAudit">
       <UniqueIdentifier>{bd7ced52-6515-46a5-a6ca-d1f3c6439189}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Monitor">
+      <UniqueIdentifier>{6a50ea62-a135-4894-a979-82ea6fc16c94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -31,7 +34,7 @@
       <Filter>Source Files\EventLog</Filter>
     </ClCompile>
     <ClCompile Include="src\AccessAudit\AccessAudit.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\AccessAudit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +46,9 @@
     </ClInclude>
     <ClInclude Include="src\AccessAudit\AccessAudit.h">
       <Filter>Source Files\AccessAudit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Monitor\Monitor.h">
+      <Filter>Source Files\Monitor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
