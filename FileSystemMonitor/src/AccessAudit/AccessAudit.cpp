@@ -114,7 +114,6 @@ bool EnableDirectoryAccessAudit(const std::wstring directory)
 	DWORD result = GetNamedSecurityInfoW(directory.c_str(), ObjectType, SACL_SECURITY_INFORMATION, NULL, NULL, NULL, &systemAcl, &securityDescriptor);
 
 	if (ERROR_SUCCESS != result) {
-		//LOG("GetNamedSecurityInfoW failed");
 		std::cout << "GetNamedSecurityInfoW  failed " << result << std::endl;
 		return false;
 	}
@@ -125,7 +124,7 @@ bool EnableDirectoryAccessAudit(const std::wstring directory)
 	ZeroMemory(&ea, sizeof(EXPLICIT_ACCESS));
 	ea.grfAccessPermissions = GENERIC_ALL;
 	ea.grfAccessMode = SET_AUDIT_SUCCESS;
-	ea.grfInheritance = CONTAINER_INHERIT_ACE;
+	ea.grfInheritance = SUB_CONTAINERS_AND_OBJECTS_INHERIT;
 	ea.Trustee.TrusteeForm = TRUSTEE_IS_NAME;
 	ea.Trustee.ptstrName = "Everyone";
 
@@ -134,7 +133,7 @@ bool EnableDirectoryAccessAudit(const std::wstring directory)
 	if (result != ERROR_SUCCESS)
 	{
 		std::cout << "SetEntriesInAcl() failed, error " << result << std::endl;
-		//Cleanup(pSS, pNewSACL);
+		LocalFree(securityDescriptor);
 		return false;
 	}
 
@@ -142,10 +141,13 @@ bool EnableDirectoryAccessAudit(const std::wstring directory)
 	if (result != ERROR_SUCCESS)
 	{
 		std::cout << "SetNamedSecurityInfo() failed, error " << result << std::endl;
-		//Cleanup(pSS, pNewSACL);
+		LocalFree(securityDescriptor);
+		LocalFree(updatedSystemAcl);
 		return false;
 	}
 
+	LocalFree(securityDescriptor);
+	LocalFree(updatedSystemAcl);
 	return true;
 }
 
@@ -160,21 +162,23 @@ bool DisableDirectoryAccessAudit(const std::wstring directory)
 		return false;
 	}
 
-
 	PACL emptyAcl = NULL;
 	emptyAcl = (ACL*)LocalAlloc(LPTR, sizeof(ACL));
 	if (0 == InitializeAcl(emptyAcl, sizeof(ACL), ACL_REVISION))
 	{
 		std::cout << "InitializeAcl() failed, error " << GetLastError() << std::endl;
+		LocalFree(emptyAcl);
+		return false;
 	}
 
 	DWORD result = SetNamedSecurityInfoW(const_cast<LPWSTR>(directory.c_str()), SE_FILE_OBJECT, SACL_SECURITY_INFORMATION, NULL, NULL, NULL, emptyAcl);
 	if (result != ERROR_SUCCESS)
 	{
 		std::cout << "SetNamedSecurityInfo() failed, error " << result << std::endl;
-		//Cleanup(pSS, pNewSACL);
+		LocalFree(emptyAcl);
 		return false;
 	}
 
-	return false;
+	LocalFree(emptyAcl);
+	return true;
 }
