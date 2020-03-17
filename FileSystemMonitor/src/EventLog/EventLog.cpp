@@ -2,6 +2,8 @@
 #include <conio.h>
 #include <winevt.h>
 #include <stdio.h>
+#include <Sddl.h>
+#include <string>
 
 #pragma comment(lib, "wevtapi.lib")
 
@@ -15,6 +17,7 @@ DWORD PrintEvent(EVT_HANDLE hEvent)
 	DWORD dwBufferUsed = 0;
 	DWORD dwPropertyCount = 0;
 	LPWSTR pRenderedContent = NULL;
+	std::wstring msg;
 
 	if (!EvtRender(NULL, hEvent, EvtRenderEventXml, dwBufferSize, pRenderedContent, &dwBufferUsed, &dwPropertyCount))
 	{
@@ -41,12 +44,18 @@ DWORD PrintEvent(EVT_HANDLE hEvent)
 		}
 	}
 
-	wprintf(L"%s\n\n", pRenderedContent);
+	msg = std::wstring(pRenderedContent);
+	if (msg.find(L"C:\\temp\\test\\test7") != std::string::npos)
+	{
+		wprintf(L"%s\n\n", pRenderedContent);
+	}
 
 cleanup:
 
-	if (pRenderedContent)
+	if (pRenderedContent) 
+	{
 		free(pRenderedContent);
+	}
 
 	return status;
 }

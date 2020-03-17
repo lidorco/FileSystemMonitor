@@ -6,9 +6,9 @@ int main() {
 	
 	//LOG("File System Monitor started");
 	
-	//EnableDirectoryAccessAudit(std::wstring(L"C:\\temp\\test\\test6"));
-	DisableDirectoryAccessAudit(std::wstring(L"C:\\temp\\test\\test6"));
-	//EventsSubscriber();
+	EnableDirectoryAccessAudit(std::wstring(L"C:\\temp\\test\\test7"));
+	EventsSubscriber();
+	DisableDirectoryAccessAudit(std::wstring(L"C:\\temp\\test\\test7"));
 	
 	return 0;
 }
