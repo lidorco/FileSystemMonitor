@@ -12,7 +12,7 @@ DWORD WINAPI MonitorEntryPoint(LPVOID param)
 	std::wcout << L"MonitorEntryPoint for " << monitor->getTrackedDirectory() << L" started!" << std::endl;
 	
 	EnableDirectoryAccessAudit(monitor->getTrackedDirectory());
-	EventsSubscriber();
+	PullerEventsSubscriber();
 	DisableDirectoryAccessAudit(monitor->getTrackedDirectory());
 	
 	std::wcout << L"MonitorEntryPoint for " << monitor->getTrackedDirectory() << L" ended!" << std::endl;
