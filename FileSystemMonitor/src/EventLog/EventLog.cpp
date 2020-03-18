@@ -4,9 +4,58 @@
 #include <stdio.h>
 #include <Sddl.h>
 #include <string>
+#include <iostream>
+
+#include "..\libs\pugixml\pugixml.hpp"
 
 #pragma comment(lib, "wevtapi.lib")
 
+
+void ParseEventXml(const std::wstring& eventXml)
+{
+	pugi::xml_document doc;
+	pugi::xml_parse_result result = doc.load_string(eventXml.c_str());
+	if (!result)
+	{
+		std::cout << "pugi xml failed loading event: " << result << std::endl;
+		return;
+	}
+
+	std::wstring eventTime;
+	int pid = 0;
+	std::wstring fileAccessed;
+	std::wstring user;
+	std::wstring process;
+	std::wstring accessStr;
+	DWORD access;
+
+	pugi::xml_node eventSystem = doc.child(L"Event").child(L"System");
+	eventTime = eventSystem.child(L"TimeCreated").attribute(L"SystemTime").as_string();
+	pid = eventSystem.child(L"Execution").attribute(L"ProcessID").as_int();
+
+	pugi::xml_node eventData = doc.child(L"Event").child(L"EventData");
+	for (pugi::xml_node data : eventData)
+	{
+		std::wstring dataName = data.attribute(L"Name").as_string();
+
+		if (!dataName.compare(L"ObjectName")) {
+			fileAccessed = data.child_value();
+		}
+		else if (!dataName.compare(L"SubjectUserName")) {
+			user = data.child_value();
+		}
+		else if (!dataName.compare(L"ProcessName")) {
+			process = data.child_value();
+		}
+		else if (!dataName.compare(L"AccessMask")) {
+			accessStr = data.child_value();
+		}
+	}
+
+	std::wcout << eventTime.c_str() << " " << pid << " " << process.c_str() << " " << user.c_str()
+		<< " " << fileAccessed.c_str() << " " << accessStr.c_str() << std::endl;
+
+}
 
 
 // Render the event as an XML string and print it.
@@ -48,6 +97,7 @@ DWORD PrintEvent(EVT_HANDLE hEvent)
 	if (msg.find(L"C:\\temp\\test\\test7") != std::string::npos)
 	{
 		wprintf(L"%s\n\n", pRenderedContent);
+		ParseEventXml(pRenderedContent);
 	}
 
 cleanup:
