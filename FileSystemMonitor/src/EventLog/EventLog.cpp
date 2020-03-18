@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 
+#include "..\Monitor\Monitor.h"
 #include "..\libs\pugixml\pugixml.hpp"
 
 #pragma comment(lib, "wevtapi.lib")
@@ -66,7 +67,7 @@ DWORD PrintEvent(EVT_HANDLE hEvent)
 	DWORD dwBufferUsed = 0;
 	DWORD dwPropertyCount = 0;
 	LPWSTR pRenderedContent = NULL;
-	std::wstring msg;
+	std::wstring msg, trackedDir;
 
 	if (!EvtRender(NULL, hEvent, EvtRenderEventXml, dwBufferSize, pRenderedContent, &dwBufferUsed, &dwPropertyCount))
 	{
@@ -94,7 +95,8 @@ DWORD PrintEvent(EVT_HANDLE hEvent)
 	}
 
 	msg = std::wstring(pRenderedContent);
-	if (msg.find(L"C:\\temp\\test\\test7") != std::string::npos)
+	trackedDir = getCurrentMonitor().getTrackedDirectory();
+	if (msg.find(trackedDir) != std::string::npos)
 	{
 		wprintf(L"%s\n\n", pRenderedContent);
 		ParseEventXml(pRenderedContent);
@@ -161,10 +163,10 @@ cleanup:
 
 void EventsSubscriber() 
 {
+	std::wcout << L"Subscribe events related to " << getCurrentMonitor().getTrackedDirectory() << L" started!" << std::endl;
 	DWORD status = ERROR_SUCCESS;
 	EVT_HANDLE hSubscription = NULL;
 	LPWSTR pwsPath = L"Security";
-	//LPWSTR pwsQuery = L"4663";
 	LPWSTR pwsQuery = L"Event/System[EventID=4663]";
 
 	// Subscribe to events beginning with the oldest event in the channel. The subscription
@@ -187,9 +189,7 @@ void EventsSubscriber()
 		goto cleanup;
 	}
 
-	wprintf(L"Hit any key to quit\n\n");
-	while (!_kbhit())
-		Sleep(10);
+	Sleep(5 * 60 * 1000);
 
 cleanup:
 
