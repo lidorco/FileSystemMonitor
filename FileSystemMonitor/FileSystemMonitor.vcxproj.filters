@@ -25,6 +25,12 @@
     <Filter Include="Source Files\Monitor">
       <UniqueIdentifier>{6a50ea62-a135-4894-a979-82ea6fc16c94}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\libs">
+      <UniqueIdentifier>{e687e419-e705-4072-81d2-60f92ba1456f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\libs\pugixml">
+      <UniqueIdentifier>{e1cba7e1-d945-4439-81c8-20730e7232c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -35,6 +41,9 @@
     </ClCompile>
     <ClCompile Include="src\AccessAudit\AccessAudit.cpp">
       <Filter>Source Files\AccessAudit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libs\pugixml\pugixml.cpp">
+      <Filter>Source Files\libs\pugixml</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +58,12 @@
     </ClInclude>
     <ClInclude Include="src\Monitor\Monitor.h">
       <Filter>Source Files\Monitor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libs\pugixml\pugiconfig.hpp">
+      <Filter>Source Files\libs\pugixml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libs\pugixml\pugixml.hpp">
+      <Filter>Source Files\libs\pugixml</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

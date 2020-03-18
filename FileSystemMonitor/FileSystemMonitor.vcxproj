@@ -112,11 +112,14 @@
   <ItemGroup>
     <ClCompile Include="src\AccessAudit\AccessAudit.cpp" />
     <ClCompile Include="src\EventLog\EventLog.cpp" />
+    <ClCompile Include="src\libs\pugixml\pugixml.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AccessAudit\AccessAudit.h" />
     <ClInclude Include="src\EventLog\EventLog.h" />
+    <ClInclude Include="src\libs\pugixml\pugiconfig.hpp" />
+    <ClInclude Include="src\libs\pugixml\pugixml.hpp" />
     <ClInclude Include="src\log\log.h" />
     <ClInclude Include="src\Monitor\Monitor.h" />
   </ItemGroup>
