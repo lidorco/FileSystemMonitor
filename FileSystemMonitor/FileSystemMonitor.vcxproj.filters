@@ -45,6 +45,12 @@
     <ClCompile Include="src\libs\pugixml\pugixml.cpp">
       <Filter>Source Files\libs\pugixml</Filter>
     </ClCompile>
+    <ClCompile Include="src\Monitor\Monitor.cpp">
+      <Filter>Source Files\Monitor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Monitor\MonitorDispatcher.cpp">
+      <Filter>Source Files\Monitor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\log\log.h">
@@ -64,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="src\libs\pugixml\pugixml.hpp">
       <Filter>Source Files\libs\pugixml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Monitor\MonitorDispatcher.h">
+      <Filter>Source Files\Monitor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

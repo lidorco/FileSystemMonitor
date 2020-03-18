@@ -114,6 +114,8 @@
     <ClCompile Include="src\EventLog\EventLog.cpp" />
     <ClCompile Include="src\libs\pugixml\pugixml.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Monitor\Monitor.cpp" />
+    <ClCompile Include="src\Monitor\MonitorDispatcher.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AccessAudit\AccessAudit.h" />
@@ -122,6 +124,7 @@
     <ClInclude Include="src\libs\pugixml\pugixml.hpp" />
     <ClInclude Include="src\log\log.h" />
     <ClInclude Include="src\Monitor\Monitor.h" />
+    <ClInclude Include="src\Monitor\MonitorDispatcher.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
