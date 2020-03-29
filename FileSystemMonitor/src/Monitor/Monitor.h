@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include <string>
 #include <map>
 
@@ -8,8 +7,8 @@
 class DirectoryMonitor {
 
 public:
-	DirectoryMonitor(const std::wstring& directory);	
-	std::wstring getTrackedDirectory();
+	explicit DirectoryMonitor(const std::wstring& directory);	
+	std::wstring getTrackedDirectory() const;
 
 private:
 	std::wstring m_directory;

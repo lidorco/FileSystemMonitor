@@ -6,6 +6,6 @@
 
 
 
-DWORD WINAPI MonitorEntryPoint(LPVOID param);
+DWORD WINAPI monitorEntryPoint(LPVOID param);
 
-bool StartMonitorDirectory(const std::wstring & directory);
+bool startMonitorDirectory(const std::wstring & directory);

@@ -1,14 +1,14 @@
 #include <iostream>
 
-#include "..\EventLog\EventLog.h"
-#include "..\AccessAudit\AccessAudit.h"
+#include "../EventLog/EventLog.h"
+#include "../AccessAudit/AccessAudit.h"
 #include "MonitorDispatcher.h"
 
 
 
-DWORD WINAPI MonitorEntryPoint(LPVOID param)
+DWORD WINAPI monitorEntryPoint(LPVOID param)
 {
-	DirectoryMonitor* monitor = reinterpret_cast<DirectoryMonitor*>(param);
+	auto monitor = reinterpret_cast<DirectoryMonitor*>(param);
 	std::wcout << L"MonitorEntryPoint for " << monitor->getTrackedDirectory() << L" started!" << std::endl;
 	
 	enableDirectoryAccessAudit(monitor->getTrackedDirectory());
@@ -21,13 +21,13 @@ DWORD WINAPI MonitorEntryPoint(LPVOID param)
 }
 
 
-bool StartMonitorDirectory(const std::wstring & directory)
+bool startMonitorDirectory(const std::wstring & directory)
 {
-	auto monitor = new DirectoryMonitor(directory);
+	const auto monitor = new DirectoryMonitor(directory);
 	DWORD threadId = 0;
 
-	HANDLE thread = CreateThread(NULL, 0, MonitorEntryPoint, monitor, CREATE_SUSPENDED, &threadId);
-	if (NULL == thread) {
+	const auto thread = CreateThread(nullptr, 0, monitorEntryPoint, monitor, CREATE_SUSPENDED, &threadId);
+	if (nullptr == thread) {
 		std::cout << "Failed create thread! " << GetLastError() << std::endl;
 		return false;
 	}

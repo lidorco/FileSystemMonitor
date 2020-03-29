@@ -12,7 +12,7 @@ DirectoryMonitor::DirectoryMonitor(const std::wstring & directory) : m_directory
 }
 
 
-std::wstring DirectoryMonitor::getTrackedDirectory()
+std::wstring DirectoryMonitor::getTrackedDirectory() const
 {
 	return m_directory;
 }
