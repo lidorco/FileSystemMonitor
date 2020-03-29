@@ -16,7 +16,7 @@ In order to received events written to Event Log I created a subscriber which im
 Visual Studio 2015
 
 ## Compile and Deployment:
-This project was develop in Visual Studio 2015 in 64bit at Debug Mode. In order to run it:
+This project was develop in Visual Studio 2019 in 64 bit. In order to run it:
 * Build the project (Ctrl+Shift+B)
 * Run it (Ctrl+F5)
 

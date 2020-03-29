@@ -11,9 +11,9 @@ DWORD WINAPI MonitorEntryPoint(LPVOID param)
 	DirectoryMonitor* monitor = reinterpret_cast<DirectoryMonitor*>(param);
 	std::wcout << L"MonitorEntryPoint for " << monitor->getTrackedDirectory() << L" started!" << std::endl;
 	
-	EnableDirectoryAccessAudit(monitor->getTrackedDirectory());
+	enableDirectoryAccessAudit(monitor->getTrackedDirectory());
 	PullerEventsSubscriber();
-	DisableDirectoryAccessAudit(monitor->getTrackedDirectory());
+	disableDirectoryAccessAudit(monitor->getTrackedDirectory());
 	
 	std::wcout << L"MonitorEntryPoint for " << monitor->getTrackedDirectory() << L" ended!" << std::endl;
 
@@ -23,7 +23,7 @@ DWORD WINAPI MonitorEntryPoint(LPVOID param)
 
 bool StartMonitorDirectory(const std::wstring & directory)
 {
-	DirectoryMonitor *monitor = new DirectoryMonitor(directory);
+	auto monitor = new DirectoryMonitor(directory);
 	DWORD threadId = 0;
 
 	HANDLE thread = CreateThread(NULL, 0, MonitorEntryPoint, monitor, CREATE_SUSPENDED, &threadId);

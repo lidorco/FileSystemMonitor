@@ -99,7 +99,7 @@ bool AddPrivilege::isPrivileged()
 
 
 
-bool EnableDirectoryAccessAudit(const std::wstring directory)
+bool enableDirectoryAccessAudit(const std::wstring directory)
 {
 	AddPrivilege privilege("SeSecurityPrivilege");
 	if (!privilege.isPrivileged())
@@ -154,7 +154,7 @@ bool EnableDirectoryAccessAudit(const std::wstring directory)
 /*
 Generate empty ACL for the directory
 */
-bool DisableDirectoryAccessAudit(const std::wstring directory)
+bool disableDirectoryAccessAudit(const std::wstring directory)
 {
 	AddPrivilege privilege("SeSecurityPrivilege");
 	if (!privilege.isPrivileged())

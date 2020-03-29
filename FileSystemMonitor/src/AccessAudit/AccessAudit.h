@@ -12,6 +12,7 @@ private:
 	HANDLE m_token = NULL;
 };
 
+
 class AddPrivilege {
 public:
 	AddPrivilege(std::string privilege);
@@ -24,6 +25,6 @@ private:
 
 
 
-bool EnableDirectoryAccessAudit(const std::wstring directory);
+bool enableDirectoryAccessAudit(const std::wstring directory);
 
-bool DisableDirectoryAccessAudit(const std::wstring directory);
+bool disableDirectoryAccessAudit(const std::wstring directory);
