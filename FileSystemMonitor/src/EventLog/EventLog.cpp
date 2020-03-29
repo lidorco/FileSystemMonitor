@@ -6,18 +6,18 @@
 #include <string>
 #include <iostream>
 
-#include "..\Monitor\Monitor.h"
-#include "..\libs\pugixml\pugixml.hpp"
+#include "../Monitor/Monitor.h"
+#include "../libs/pugixml/pugixml.hpp"
 
 #pragma comment(lib, "wevtapi.lib")
 
 #define ARRAY_SIZE 10
 
 
-void ParseEventXml(const std::wstring& eventXml)
+void parseEventXml(const std::wstring& eventXml)
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_string(eventXml.c_str());
+	const pugi::xml_parse_result result = doc.load_string(eventXml.c_str());
 	if (!result)
 	{
 		std::cout << "pugi xml failed loading event: " << result << std::endl;
@@ -25,14 +25,13 @@ void ParseEventXml(const std::wstring& eventXml)
 	}
 
 	std::wstring eventTime;
-	int pid = 0;
+	auto pid = 0;
 	std::wstring fileAccessed;
 	std::wstring user;
 	std::wstring process;
 	std::wstring accessStr;
-	DWORD access;
 
-	pugi::xml_node eventSystem = doc.child(L"Event").child(L"System");
+	const pugi::xml_node eventSystem = doc.child(L"Event").child(L"System");
 	eventTime = eventSystem.child(L"TimeCreated").attribute(L"SystemTime").as_string();
 	pid = eventSystem.child(L"Execution").attribute(L"ProcessID").as_int();
 
@@ -61,7 +60,6 @@ void ParseEventXml(const std::wstring& eventXml)
 }
 
 
-
 // Render the event as an XML string and print it.
 DWORD PrintEvent(EVT_HANDLE hEvent)
 {
@@ -69,10 +67,11 @@ DWORD PrintEvent(EVT_HANDLE hEvent)
 	DWORD dwBufferSize = 0;
 	DWORD dwBufferUsed = 0;
 	DWORD dwPropertyCount = 0;
-	LPWSTR pRenderedContent = NULL;
-	std::wstring msg, trackedDir;
+	LPWSTR pRenderedContent = nullptr;
+	std::wstring eventMessage;
+	std::wstring trackedDir;
 
-	if (!EvtRender(NULL, hEvent, EvtRenderEventXml, dwBufferSize, pRenderedContent, &dwBufferUsed, &dwPropertyCount))
+	if (!EvtRender(nullptr, hEvent, EvtRenderEventXml, dwBufferSize, pRenderedContent, &dwBufferUsed, &dwPropertyCount))
 	{
 		if (ERROR_INSUFFICIENT_BUFFER == (status = GetLastError()))
 		{
@@ -80,7 +79,7 @@ DWORD PrintEvent(EVT_HANDLE hEvent)
 			pRenderedContent = (LPWSTR)malloc(dwBufferSize);
 			if (pRenderedContent)
 			{
-				EvtRender(NULL, hEvent, EvtRenderEventXml, dwBufferSize, pRenderedContent, &dwBufferUsed, &dwPropertyCount);
+				EvtRender(nullptr, hEvent, EvtRenderEventXml, dwBufferSize, pRenderedContent, &dwBufferUsed, &dwPropertyCount);
 			}
 			else
 			{
@@ -97,12 +96,11 @@ DWORD PrintEvent(EVT_HANDLE hEvent)
 		}
 	}
 
-	msg = std::wstring(pRenderedContent);
+	eventMessage = std::wstring(pRenderedContent);
 	trackedDir = getCurrentMonitor().getTrackedDirectory();
-	if (msg.find(trackedDir) != std::string::npos)
+	if (eventMessage.find(trackedDir) != std::string::npos)
 	{
-		//wprintf(L"%s\n\n", pRenderedContent);
-		ParseEventXml(pRenderedContent);
+		parseEventXml(pRenderedContent);
 	}
 
 cleanup:
@@ -117,7 +115,7 @@ cleanup:
 
 
 // Enumerate the events in the result set.
-DWORD EnumerateResults(EVT_HANDLE hResults)
+DWORD enumerateResults(EVT_HANDLE hResults)
 {
 	DWORD status = ERROR_SUCCESS;
 	EVT_HANDLE hEvents[ARRAY_SIZE];
@@ -143,7 +141,7 @@ DWORD EnumerateResults(EVT_HANDLE hResults)
 			if (ERROR_SUCCESS == (status = PrintEvent(hEvents[i])))
 			{
 				EvtClose(hEvents[i]);
-				hEvents[i] = NULL;
+				hEvents[i] = nullptr;
 			}
 			else
 			{
@@ -157,7 +155,7 @@ cleanup:
 	// Closes any events in case an error occurred above.
 	for (DWORD i = 0; i < dwReturned; i++)
 	{
-		if (NULL != hEvents[i])
+		if (nullptr != hEvents[i])
 			EvtClose(hEvents[i]);
 	}
 
@@ -165,17 +163,17 @@ cleanup:
 }
 
 // Determines whether the console input was a key event.
-BOOL IsKeyEvent(HANDLE hStdIn)
+BOOL isKeyEvent(HANDLE hStdIn)
 {
-	INPUT_RECORD Record[128];
+	INPUT_RECORD record[128];
 	DWORD dwRecordsRead = 0;
-	BOOL fKeyPress = FALSE;
+	auto fKeyPress = FALSE;
 
-	if (ReadConsoleInput(hStdIn, Record, 128, &dwRecordsRead))
+	if (ReadConsoleInput(hStdIn, record, 128, &dwRecordsRead))
 	{
 		for (DWORD i = 0; i < dwRecordsRead; i++)
 		{
-			if (KEY_EVENT == Record[i].EventType)
+			if (KEY_EVENT == record[i].EventType)
 			{
 				fKeyPress = TRUE;
 				break;
@@ -186,12 +184,12 @@ BOOL IsKeyEvent(HANDLE hStdIn)
 	return fKeyPress;
 }
 
-void PullerEventsSubscriber()
+void pullerEventsSubscriber()
 {
 	DWORD status = ERROR_SUCCESS;
 	EVT_HANDLE hSubscription = NULL;
-	LPWSTR pwsPath = L"Security";
-	LPWSTR pwsQuery = L"Event/System[EventID=4663]";
+	const LPWSTR pwsPath = L"Security";
+	const LPWSTR pwsQuery = L"Event/System[EventID=4663]";
 	HANDLE aWaitHandles[2];
 	DWORD dwWait = 0;
 
@@ -205,16 +203,16 @@ void PullerEventsSubscriber()
 
 	// Get a handle to a manual reset event object that the subscription will signal
 	// when events become available that match your query criteria.
-	aWaitHandles[1] = CreateEvent(NULL, TRUE, TRUE, NULL);
-	if (NULL == aWaitHandles[1])
+	aWaitHandles[1] = CreateEvent(nullptr, TRUE, TRUE, nullptr);
+	if (nullptr == aWaitHandles[1])
 	{
 		wprintf(L"CreateEvent failed with %lu.\n", GetLastError());
 		goto cleanup;
 	}
 
 	// Subscribe to events.
-	hSubscription = EvtSubscribe(NULL, aWaitHandles[1], pwsPath, pwsQuery, NULL, NULL, NULL, EvtSubscribeStartAtOldestRecord);
-	if (NULL == hSubscription)
+	hSubscription = EvtSubscribe(nullptr, aWaitHandles[1], pwsPath, pwsQuery, nullptr, nullptr, nullptr, EvtSubscribeStartAtOldestRecord);
+	if (nullptr == hSubscription)
 	{
 		status = GetLastError();
 
@@ -237,12 +235,12 @@ void PullerEventsSubscriber()
 
 		if (0 == dwWait - WAIT_OBJECT_0)  // Console input
 		{
-			if (IsKeyEvent(aWaitHandles[0]))
+			if (isKeyEvent(aWaitHandles[0]))
 				break;
 		}
 		else if (1 == dwWait - WAIT_OBJECT_0) // Query results
 		{
-			if (ERROR_NO_MORE_ITEMS != (status = EnumerateResults(hSubscription)))
+			if (ERROR_NO_MORE_ITEMS != (status = enumerateResults(hSubscription)))
 			{
 				break;
 			}
