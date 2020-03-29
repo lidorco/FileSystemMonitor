@@ -1,7 +1,5 @@
 #include <windows.h>
-#include <conio.h>
 #include <winevt.h>
-#include <stdio.h>
 #include <Sddl.h>
 #include <string>
 #include <iostream>
